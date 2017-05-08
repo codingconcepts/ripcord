@@ -1,2 +1,7 @@
 # ripcord
-An out-of-process monitor to protect your infrastructure during a DDOS attack
+A monitoring library to protect your infrastructure during a DOS attack.
+
+### Todo
+
+- [] Allow for in-process usage
+- [] Allow for out-of-process usage
