@@ -1,0 +1,20 @@
+{
+	"ImportPath": "github.com/codingconcepts/ripcord",
+	"GoVersion": "go1.8",
+	"GodepVersion": "v79",
+	"Deps": [
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.11.4",
+			"Rev": "0208149b40d863d2c1a2f8fe5753096a9cf2cc8b"
+		},
+		{
+			"ImportPath": "github.com/codingconcepts/albert/test",
+			"Rev": "cd53a03a6b29a7ff2a39154a9c74e90898662cc6"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "99f16d856c9836c42d24e7ab64ea72916925fa97"
+		}
+	]
+}
