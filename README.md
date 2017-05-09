@@ -25,3 +25,5 @@ Ripcord sits on your web servers and monitors the traffic on any number of confi
 - [x] Allow the user to configure command against each network interface
 - [ ] Test in-process usage
 - [x] Test out-of-process usage
+- [ ] Runner should take Options, allowing for default stats collector to be used
+- [ ] Ability to run different stats collectors per interface config

@@ -3,7 +3,6 @@ package ripcord
 import (
 	logrustest "github.com/Sirupsen/logrus/hooks/test"
 	"testing"
-	"time"
 )
 
 var (
