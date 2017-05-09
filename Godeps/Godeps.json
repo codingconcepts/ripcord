@@ -12,6 +12,11 @@
 			"Rev": "0208149b40d863d2c1a2f8fe5753096a9cf2cc8b"
 		},
 		{
+			"ImportPath": "github.com/Sirupsen/logrus/hooks/test",
+			"Comment": "v0.11.4",
+			"Rev": "0208149b40d863d2c1a2f8fe5753096a9cf2cc8b"
+		},
+		{
 			"ImportPath": "github.com/shirou/gopsutil/internal/common",
 			"Comment": "v2.17.02-12-gd8bc9ca",
 			"Rev": "d8bc9ca755fb1de49d8008b1c7d651f32e7225d1"

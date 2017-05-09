@@ -24,10 +24,11 @@ func main() {
 	runner := ripcord.NewRunner(collector, configs, logger)
 
 	go func() {
-		if err := runner.Start(configs); err != nil {
+		if err := runner.Start(); err != nil {
 			logger.Fatal(err)
 		}
 	}()
 
 	fmt.Scanln()
+	runner.Stop()
 }

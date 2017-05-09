@@ -9,7 +9,7 @@ Ripcord is in a very early stage of development, so you've come at a good time! 
 
 ## Pull requests
 
-Pull requests will be gratefully received.  They'll be reviewed and if **A)** the code's sensible and **B)** the functionality serves to enhance albert, it'll be merged into *master*.
+Pull requests will be gratefully received.  They'll be reviewed and if **A)** the code's sensible and **B)** the functionality serves to enhance ripcord, it'll be merged into *master*.
 
 Untested code will **not** be merged.
 
