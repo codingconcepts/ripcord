@@ -20,7 +20,8 @@ func main() {
 	}
 
 	logger := ripcord.NewLogger(os.Stdout, log.DebugLevel)
-	runner := ripcord.NewRunner(configs, logger)
+	collector := new(netStatsCollector)
+	runner := ripcord.NewRunner(collector, configs, logger)
 
 	go func() {
 		if err := runner.Start(configs); err != nil {

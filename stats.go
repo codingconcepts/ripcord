@@ -1,9 +1,20 @@
 package ripcord
 
-import "github.com/shirou/gopsutil/net"
+// StatsCollector defines the behaviour of something
+// which can collect stats.
+type StatsCollector interface {
+	CollectStats() (IOStats, error)
+}
 
-// IOStats is a slice of net.IOCounterStat
-type IOStats []net.IOCountersStat
+// IOStat is represents a snapshot for a network interface.
+type IOStat struct {
+	Name      string
+	BytesSent uint64
+	BytesRecv uint64
+}
+
+// IOStats is a slice of IOStat structs.
+type IOStats []IOStat
 
 // Filter filters a given IOStats agains a set of interface
 // names, returning only those whose names match.
@@ -20,7 +31,7 @@ func (stats IOStats) Filter(names ...string) (filtered IOStats) {
 
 // Find returns the first net.IOCounterStat whose name
 // matches the given value.
-func (stats IOStats) Find(name string) (stat net.IOCountersStat) {
+func (stats IOStats) Find(name string) (stat IOStat) {
 	for _, s := range stats {
 		if s.Name == name {
 			return s
