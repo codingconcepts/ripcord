@@ -3,7 +3,7 @@ package ripcord
 import (
 	"testing"
 
-	"github.com/codingconcepts/albert/test"
+	"github.com/codingconcepts/ripcord/test"
 )
 
 func TestFilter(t *testing.T) {

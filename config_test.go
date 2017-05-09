@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/codingconcepts/albert/test"
+	"github.com/codingconcepts/ripcord/test"
 )
 
 var (
