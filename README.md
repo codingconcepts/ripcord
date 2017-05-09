@@ -1,5 +1,7 @@
 # ripcord
-A monitoring library to protect your infrastructure during a DOS attack.
+A monitoring library to p
+
+[![Build Status](https://travis-ci.org/codingconcepts/ripcord.svg?branch=master)](https://travis-ci.org/codingconcepts/ripcord)
 
 ## What's the point?
 
