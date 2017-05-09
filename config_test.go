@@ -109,7 +109,7 @@ func TestCompareStatReturnNoErrorIfBytesSentWithinThreshold(t *testing.T) {
 func TestCompareStatsReturnNoErrorIfBytesRecvWithinThreshold(t *testing.T) {
 	configs := InterfaceConfigs{
 		Interfaces: []InterfaceConfig{
-			InterfaceConfig{
+			{
 				Name: "a", MaxBytesRecv: 10, MaxBytesSent: 10},
 		},
 	}
@@ -128,10 +128,10 @@ func TestCompareStatsReturnNoErrorIfBytesRecvWithinThreshold(t *testing.T) {
 func TestCompareStatsReturnsErrorIfBytesRecvExceedsThreshold(t *testing.T) {
 	configs := InterfaceConfigs{
 		Interfaces: []InterfaceConfig{
-			InterfaceConfig{
-				Name: "a", MaxBytesRecv: 10, MaxBytesSent: 10},
-		},
-	}
+			{
+				Name: "a", MaxBytesRecv: 10, MaxBytesSent: 10,
+			},
+		}}
 
 	err := configs.CompareStats(IOStats{IOStat{Name: "a", BytesRecv: 10}}, IOStats{IOStat{Name: "a", BytesRecv: 21}})
 	test.ErrorNotNil(t, err)
