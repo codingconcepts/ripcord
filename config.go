@@ -12,8 +12,8 @@ import (
 // allowing you to react to different thresholds per network
 // interface.
 type InterfaceConfigs struct {
-	CheckInterval ConfigDuration `json:"checkInterval"`
-	Interfaces []InterfaceConfig `json:"interfaces"`
+	CheckInterval ConfigDuration    `json:"checkInterval"`
+	Interfaces    []InterfaceConfig `json:"interfaces"`
 }
 
 // InterfaceConfig holds the configurable thresholds for a
