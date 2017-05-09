@@ -21,5 +21,5 @@ Ripcord sits on your web servers and monitors the traffic on any number of confi
 ### Todo
 
 - [ ] Allow the user to configure command against each network interface
-- [ ] Allow for in-process usage
-- [x] Allow for out-of-process usage
+- [ ] Test in-process usage
+- [x] Test out-of-process usage
