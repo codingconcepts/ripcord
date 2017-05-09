@@ -1,5 +1,5 @@
 # ripcord
-A monitoring library to p
+A damage-limitation monitoring library to protect your infrastructure during a DOS attack.
 
 [![Build Status](https://travis-ci.org/codingconcepts/ripcord.svg?branch=master)](https://travis-ci.org/codingconcepts/ripcord)
 
