@@ -36,13 +36,20 @@ func (runner *Runner) Start(configs InterfaceConfigs) (err error) {
 
 	for {
 		select {
-		case <-time.Tick(time.Second):
+		case <-time.Tick(runner.configs.CheckInterval.Duration):
 			if curr, err = runner.StatsCollector.CollectStats(); err != nil {
 				return
 			}
 
 			if err = runner.configs.CompareStats(prev, curr); err != nil {
 				runner.logger.WithError(err).Error("breach detected")
+
+				// if the error encounterd satisfies the command executor
+				// interface, execute its instructions now
+				if executor, ok := err.(CommandExecutor); ok {
+					runner.logger.WithError(err).Error("executing command")
+					return executor.Execute()
+				}
 			} else {
 				runner.logger.Debug("no breach detected")
 			}

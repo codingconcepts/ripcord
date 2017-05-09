@@ -1,12 +1,17 @@
-[
-    {
-        "name": "WiFi",
-        "maxBytesRecv": 500000,
-        "maxBytesSent": 500000
-    },
-    {
-        "name": "Local Area Connection *1",
-        "maxBytesRecv": 10000000,
-        "maxBytesSent": 10000000
-    }
-]
+{
+    "checkInterval": "1s",
+    "interfaces": [
+        {
+            "name": "WiFi",
+            "maxBytesRecv": 500000,
+            "maxBytesSent": 500000,
+            "instructions": [ "notepad" ]
+        },
+        {
+            "name": "Local Area Connection *1",
+            "maxBytesRecv": 10000000,
+            "maxBytesSent": 10000000,
+            "instructions": [ "notepad" ]
+        }
+    ]
+}

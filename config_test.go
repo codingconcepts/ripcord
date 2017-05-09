@@ -1,9 +1,11 @@
 package ripcord
 
 import (
+	"encoding/json"
 	"errors"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/codingconcepts/ripcord/test"
 )
@@ -20,37 +22,46 @@ func (r *errorReader) Read(data []byte) (n int, err error) {
 
 func TestNewConfigFromReader(t *testing.T) {
 	reader := strings.NewReader(
-		`[
-			{
-				"name": "WiFi",
-				"maxBytesRecv": 500000,
-				"maxBytesSent": 1000000
-			},
-			{
-				"name": "Local Area Connection *1",
-				"maxBytesRecv": 20000000,
-				"maxBytesSent": 30000000
-			}
-		]`)
+		`{
+			"checkInterval": "5s",
+			"interfaces": [
+				{
+					"name": "WiFi",
+					"maxBytesRecv": 123,
+					"maxBytesSent": 234,
+					"instructions": [ "echo", "WiFi breached" ]
+				},
+				{
+					"name": "Local Area Connection *1",
+					"maxBytesRecv": 345,
+					"maxBytesSent": 456,
+					"instructions": [ "echo", "Local Area Connection *1 breached" ]
+				}
+			]
+		}`)
 
 	configs, err := NewConfigsFromReader(reader)
 	test.ErrorNil(t, err)
-	test.Equals(t, 2, len(configs))
 
-	test.Equals(t, "WiFi", configs[0].Name)
-	test.Equals(t, uint64(500000), configs[0].MaxBytesRecv)
-	test.Equals(t, uint64(1000000), configs[0].MaxBytesSent)
+	test.Equals(t, time.Second*5, configs.CheckInterval.Duration)
+	test.Equals(t, 2, len(configs.Interfaces))
 
-	test.Equals(t, "Local Area Connection *1", configs[1].Name)
-	test.Equals(t, uint64(20000000), configs[1].MaxBytesRecv)
-	test.Equals(t, uint64(30000000), configs[1].MaxBytesSent)
+	test.Equals(t, "WiFi", configs.Interfaces[0].Name)
+	test.Equals(t, uint64(123), configs.Interfaces[0].MaxBytesRecv)
+	test.Equals(t, uint64(234), configs.Interfaces[0].MaxBytesSent)
+	test.Equals(t, []string{"echo", "WiFi breached"}, configs.Interfaces[0].Instructions)
+
+	test.Equals(t, "Local Area Connection *1", configs.Interfaces[1].Name)
+	test.Equals(t, uint64(345), configs.Interfaces[1].MaxBytesRecv)
+	test.Equals(t, uint64(456), configs.Interfaces[1].MaxBytesSent)
+	test.Equals(t, []string{"echo", "Local Area Connection *1 breached"}, configs.Interfaces[1].Instructions)
 }
 
 func TestNewConfigFromReaderReturnsError(t *testing.T) {
 	configs, err := NewConfigsFromReader(new(errorReader))
 	test.ErrorNotNil(t, err)
 	test.Equals(t, errFromErrorReader, err)
-	test.Equals(t, 0, len(configs))
+	test.Equals(t, 0, len(configs.Interfaces))
 }
 
 func TestCompareStatReturnNoErrorIfBytesRecvWithinThreshold(t *testing.T) {
@@ -113,8 +124,10 @@ func TestCompareStatReturnsErrorIfBytesSentExceedsThreshold(t *testing.T) {
 
 func TestCompareStatsReturnNoErrorIfBytesRecvWithinThreshold(t *testing.T) {
 	configs := InterfaceConfigs{
-		InterfaceConfig{
-			Name: "a", MaxBytesRecv: 10, MaxBytesSent: 10},
+		Interfaces: []InterfaceConfig{
+			InterfaceConfig{
+				Name: "a", MaxBytesRecv: 10, MaxBytesSent: 10},
+		},
 	}
 
 	prev := IOStats{
@@ -130,7 +143,9 @@ func TestCompareStatsReturnNoErrorIfBytesRecvWithinThreshold(t *testing.T) {
 
 func TestCompareStatsReturnsErrorIfBytesRecvExceedsThreshold(t *testing.T) {
 	configs := InterfaceConfigs{
-		InterfaceConfig{Name: "a", MaxBytesRecv: 10},
+		Interfaces: []InterfaceConfig{
+			InterfaceConfig{Name: "a", MaxBytesRecv: 10},
+		},
 	}
 
 	prev := IOStats{IOStat{Name: "a", BytesRecv: 10}}
@@ -147,7 +162,9 @@ func TestCompareStatsReturnsErrorIfBytesRecvExceedsThreshold(t *testing.T) {
 
 func TestCompareStatsReturnsErrorIfBytesSentExceedsThreshold(t *testing.T) {
 	configs := InterfaceConfigs{
-		InterfaceConfig{Name: "a", MaxBytesRecv: 10},
+		Interfaces: []InterfaceConfig{
+			InterfaceConfig{Name: "a", MaxBytesRecv: 10},
+		},
 	}
 
 	prev := IOStats{IOStat{Name: "a", BytesSent: 10}}
@@ -160,4 +177,21 @@ func TestCompareStatsReturnsErrorIfBytesSentExceedsThreshold(t *testing.T) {
 	test.Assert(t, ok)
 	test.Equals(t, "a", realErr.interfaceName)
 	test.Equals(t, uint64(11), realErr.amount)
+}
+
+func TestConfigDuration(t *testing.T) {
+	var s struct {
+		Duration ConfigDuration `json:"duration"`
+	}
+
+	j := `{ "duration": "1h30m40s" }`
+
+	err := json.Unmarshal([]byte(j), &s)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if s.Duration.Duration != time.Hour+time.Minute*30+time.Second*40 {
+		t.Fatalf("expected 1h30m40s but got %v", s.Duration)
+	}
 }
