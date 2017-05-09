@@ -1,6 +1,7 @@
 # ripcord
 A damage-limitation monitoring library to protect your infrastructure during a DOS attack.
 
+[![Godoc](https://godoc.org/github.com/codingconcepts/ripcord?status.svg)](https://godoc.org/github.com/codingconcepts/ripcord)
 [![Build Status](https://travis-ci.org/codingconcepts/ripcord.svg?branch=master)](https://travis-ci.org/codingconcepts/ripcord)
 [![Exago](https://api.exago.io:443/badge/cov/github.com/codingconcepts/ripcord)](https://exago.io/project/github.com/codingconcepts/ripcord)
 
