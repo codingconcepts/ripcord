@@ -75,22 +75,24 @@ func TestCompareStatReturnNoErrorIfBytesRecvWithinThreshold(t *testing.T) {
 		IOStat{Name: "a", BytesRecv: 20}))
 }
 
-func TestCompareStatReturnsErrorIfBytesRecvExceedsThreshold(t *testing.T) {
-	config := &InterfaceConfig{
-		Name:         "a",
-		MaxBytesRecv: 10,
-	}
-
-	err := config.CompareStat(
-		IOStat{Name: "a", BytesRecv: 10},
-		IOStat{Name: "a", BytesRecv: 21})
-
+func TestCompareStatReturnsErrorIfStatsExceedThreshold(t *testing.T) {
+	config := &InterfaceConfig{Name: "a", MaxBytesRecv: 10}
+	err := config.CompareStat(IOStat{Name: "a", BytesRecv: 10}, IOStat{Name: "a", BytesRecv: 21})
 	test.ErrorNotNil(t, err)
 
-	realErr, ok := err.(*ErrBytesRecv)
+	recvErr, ok := err.(*ErrBytesRecv)
 	test.Assert(t, ok)
-	test.Equals(t, "a", realErr.interfaceName)
-	test.Equals(t, uint64(11), realErr.amount)
+	test.Equals(t, "a", recvErr.interfaceName)
+	test.Equals(t, uint64(11), recvErr.amount)
+
+	config = &InterfaceConfig{Name: "b", MaxBytesSent: 10}
+	err = config.CompareStat(IOStat{Name: "b", BytesSent: 10}, IOStat{Name: "b", BytesSent: 21})
+	test.ErrorNotNil(t, err)
+
+	sentErr, ok := err.(*ErrBytesSent)
+	test.Assert(t, ok)
+	test.Equals(t, "b", sentErr.interfaceName)
+	test.Equals(t, uint64(11), sentErr.amount)
 }
 
 func TestCompareStatReturnNoErrorIfBytesSentWithinThreshold(t *testing.T) {
@@ -102,24 +104,6 @@ func TestCompareStatReturnNoErrorIfBytesSentWithinThreshold(t *testing.T) {
 	test.ErrorNil(t, config.CompareStat(
 		IOStat{Name: "a", BytesSent: 10},
 		IOStat{Name: "a", BytesSent: 20}))
-}
-
-func TestCompareStatReturnsErrorIfBytesSentExceedsThreshold(t *testing.T) {
-	config := &InterfaceConfig{
-		Name:         "a",
-		MaxBytesSent: 10,
-	}
-
-	err := config.CompareStat(
-		IOStat{Name: "a", BytesSent: 10},
-		IOStat{Name: "a", BytesSent: 21})
-
-	test.ErrorNotNil(t, err)
-
-	realErr, ok := err.(*ErrBytesSent)
-	test.Assert(t, ok)
-	test.Equals(t, "a", realErr.interfaceName)
-	test.Equals(t, uint64(11), realErr.amount)
 }
 
 func TestCompareStatsReturnNoErrorIfBytesRecvWithinThreshold(t *testing.T) {
@@ -144,39 +128,26 @@ func TestCompareStatsReturnNoErrorIfBytesRecvWithinThreshold(t *testing.T) {
 func TestCompareStatsReturnsErrorIfBytesRecvExceedsThreshold(t *testing.T) {
 	configs := InterfaceConfigs{
 		Interfaces: []InterfaceConfig{
-			InterfaceConfig{Name: "a", MaxBytesRecv: 10},
+			InterfaceConfig{
+				Name: "a", MaxBytesRecv: 10, MaxBytesSent: 10},
 		},
 	}
 
-	prev := IOStats{IOStat{Name: "a", BytesRecv: 10}}
-	curr := IOStats{IOStat{Name: "a", BytesRecv: 21}}
-
-	err := configs.CompareStats(prev, curr)
+	err := configs.CompareStats(IOStats{IOStat{Name: "a", BytesRecv: 10}}, IOStats{IOStat{Name: "a", BytesRecv: 21}})
 	test.ErrorNotNil(t, err)
 
-	realErr, ok := err.(*ErrBytesRecv)
+	recvErr, ok := err.(*ErrBytesRecv)
 	test.Assert(t, ok)
-	test.Equals(t, "a", realErr.interfaceName)
-	test.Equals(t, uint64(11), realErr.amount)
-}
+	test.Equals(t, "a", recvErr.interfaceName)
+	test.Equals(t, uint64(11), recvErr.amount)
 
-func TestCompareStatsReturnsErrorIfBytesSentExceedsThreshold(t *testing.T) {
-	configs := InterfaceConfigs{
-		Interfaces: []InterfaceConfig{
-			InterfaceConfig{Name: "a", MaxBytesRecv: 10},
-		},
-	}
-
-	prev := IOStats{IOStat{Name: "a", BytesSent: 10}}
-	curr := IOStats{IOStat{Name: "a", BytesSent: 21}}
-
-	err := configs.CompareStats(prev, curr)
+	err = configs.CompareStats(IOStats{IOStat{Name: "a", BytesSent: 10}}, IOStats{IOStat{Name: "a", BytesSent: 21}})
 	test.ErrorNotNil(t, err)
 
-	realErr, ok := err.(*ErrBytesSent)
+	sentErr, ok := err.(*ErrBytesSent)
 	test.Assert(t, ok)
-	test.Equals(t, "a", realErr.interfaceName)
-	test.Equals(t, uint64(11), realErr.amount)
+	test.Equals(t, "a", sentErr.interfaceName)
+	test.Equals(t, uint64(11), sentErr.amount)
 }
 
 func TestConfigDuration(t *testing.T) {
